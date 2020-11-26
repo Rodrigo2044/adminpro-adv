@@ -4,6 +4,8 @@ import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
 import { Usuario } from '../models/usuario.model';
+import { Hospital } from '../models/hospital.model';
+import { Medico } from '../models/medico.model';
 
 const base_url = environment.base_url;
 
@@ -28,11 +30,21 @@ export class BusquedasService {
   }
 
   private transformarUsuarios( resultados: any[] ): Usuario[] {
-
+    // Aquí estamos haciendo la transformación de la instancia del usuario
     return resultados.map(
       user => new Usuario(user.nombre, user.email, '', user.img, user.google, user.role, user.uid )  
     );
   }
+
+  private transformarHospitales( resultados: any[] ): Hospital[] {
+    return resultados;
+  }
+
+  private transformarMedicos( resultados: any[] ): Medico[] {
+    return resultados;
+  }
+
+
 
   buscar( 
       tipo: 'usuarios'|'medicos'|'hospitales',
@@ -47,15 +59,24 @@ export class BusquedasService {
                 switch ( tipo ) {
                   case 'usuarios':
                     return this.transformarUsuarios( resp.resultados )
-                
+
+                    case 'hospitales':
+                    return this.transformarHospitales( resp.resultados )
+
+                    case 'medicos':
+                    return this.transformarMedicos( resp.resultados )
+                  
+                    // Caso contrario regreso un arreglo vacio, pero no deveria suceder nunca
                   default:
                     return [];
                 }
-
+                
               })
             );
 
   }
+
+
 
 
 }

@@ -146,6 +146,7 @@ export class UsuarioService {
             .pipe(
               map( resp => {
                 const usuarios = resp.usuarios.map( 
+                  // Hice todo esto para crear una instancia de mi usuario
                   user => new Usuario(user.nombre, user.email, '', user.img, user.google, user.role, user.uid )  
                 );
                 return {
