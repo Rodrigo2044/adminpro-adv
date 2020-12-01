@@ -6,6 +6,13 @@ import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
+
+/*
+  Este guard se encarga de tener siempre autenticado al usuario
+  Si el token esta validado lo dejo entrar en la aplicación, si no esta 
+  autenticado lo saco
+*/
+
 export class AuthGuard implements CanActivate {
 
   constructor( private usuarioService: UsuarioService,

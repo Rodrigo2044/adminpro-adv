@@ -36,6 +36,11 @@ export class UsuarioService {
     return localStorage.getItem('token') || '';
   }
 
+  // RPE 30-nov-2020
+  get role(): 'ADMIN_ROLE' | 'USER_ROLE' {
+   return this.usuario.role;
+  }
+
   get uid():string {
     return this.usuario.uid || '';
   }
@@ -63,8 +68,19 @@ export class UsuarioService {
 
   }
 
+  /*
+    Necesito pasar el menu por el JSON.stringify para que me lo pace a string
+  */
+
+  guardarLocalStorage( token: string, menu: any ){
+
+    localStorage.setItem('token', token );
+    localStorage.setItem('menu', JSON.stringify(menu) );
+  }
+
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('menu');
 
     this.auth2.signOut().then(() => {
 
@@ -85,7 +101,7 @@ export class UsuarioService {
       map( (resp: any) => {
         const { email, google, nombre, role, img = '', uid } = resp.usuario;
         this.usuario = new Usuario( nombre, email, '', img, google, role, uid );
-        localStorage.setItem('token', resp.token );
+        this.guardarLocalStorage( resp.token, resp.menu )
         return true;
       }),
       catchError( error => of(false) )
@@ -99,7 +115,7 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/usuarios`, formData )
               .pipe(
                 tap( (resp: any) => {
-                  localStorage.setItem('token', resp.token )
+                  this.guardarLocalStorage( resp.token, resp.menu )
                 })
               )
 
@@ -121,7 +137,7 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/login`, formData )
                 .pipe(
                   tap( (resp: any) => {
-                    localStorage.setItem('token', resp.token )
+                    this.guardarLocalStorage( resp.token, resp.menu )
                   })
                 );
 
@@ -132,7 +148,7 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/login/google`, { token } )
                 .pipe(
                   tap( (resp: any) => {
-                    localStorage.setItem('token', resp.token )
+                    this.guardarLocalStorage( resp.token, resp.menu )
                   })
                 );
 
